@@ -5,9 +5,9 @@
 ### Organization
 
 - module-a
--- pom.xml
+  - pom.xml
 - module-b
--- pom.xml
+  - pom.xml
 
 ### Goals: develop GitHub Actions to:
 
