@@ -27,4 +27,4 @@ jobs:
     steps:
     # Runs a single command using the runners shell
     - name: Create branch
-      run: git checkout -b release-${{ github.event.inputs.version }} development
+      run: git checkout -b release-${{ github.event.inputs.version }} master
