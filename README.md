@@ -2,7 +2,7 @@
 
 ## This repo is used to explore GitHub actions
 
-### Organization
+### Repo File Organization
 
 - module-a
   - pom.xml
@@ -11,7 +11,7 @@
 
 ### Goals: develop GitHub Actions to:
 
-- create a branch named accoridng to the following pattern: 'release-x.x'
+- create a branch named according to the following pattern: 'release-x.x'
 - create a feature branch named according to the following pattern: '{jira repo}-{issue number}-uptick-{version}'
   - check out feature branch
   - find and replace the current version with a new version
