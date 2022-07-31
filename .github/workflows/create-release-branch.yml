@@ -28,9 +28,7 @@ jobs:
     # Runs a single command using the runners shell
     - name: Check out code
       uses: actions/checkout@v2
-    - name: Checkout development
-      run: git checkout development
-    - name: Create release branch
-      run: git branch release-${{ github.event.inputs.versionName }}
-    - name: Push new branch
+    - name: Create release branch from development
+      run: git checkout -b release-${{ github.event.inputs.versionName }} development
+    - name: Push new release branch
       run: git push origin release-${{ github.event.inputs.versionName }}
