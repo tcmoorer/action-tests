@@ -1,0 +1,41 @@
+# This is a basic workflow that is manually triggered
+
+name: Uptick Version Workflow
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      oldVersion:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'Current Release Version Id'
+        # Input has to be provided for the workflow to run
+        required: true
+      newVersion:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'Next Release Version Id'
+        # Input has to be provided for the workflow to run
+        required: true
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "create-branch"
+  uptick-version:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Runs a single command using the runners shell
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Create release branch from development
+      run: git checkout development
+    - name: Uptick oldValue to newValue in pom.xml files
+      run: grep -rl --include="pom.xml" "${{ github.event.inputs.oldVersion }}-SNAPSHOT" * | xargs sed -i '' -e "s/${{ github.event.inputs.oldVersion }}-SNAPSHOT/${{ github.event.inputs.newVersion }}-SNAPSHOT/g"
+    - name: Commit changes
+      run: |
+        git commit -m 'Uptick repo from ${{ github.event.inputs.oldVersion }} to ${{ github.event.inputs.newVersion }}'
+        git push origin development
