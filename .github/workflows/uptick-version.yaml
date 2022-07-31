@@ -35,7 +35,7 @@ jobs:
       run: git checkout development
     - name: Uptick oldValue to newValue in pom.xml files
       run: |
-        grep -rl --include="pom.xml" "${{ github.event.inputs.oldVersion }}-SNAPSHOT" * | xargs sed -i '' -e "s/${{ github.event.inputs.oldVersion }}-SNAPSHOT/${{ github.event.inputs.newVersion }}-SNAPSHOT/g"
+        sed -i 's/${{ github.event.inputs.oldVersion }}/${{ github.event.inputs.newVersion }}/g' pom.xml
     - name: Commit changes
       run: |
         git commit -m 'Uptick repo from ${{ github.event.inputs.oldVersion }} to ${{ github.event.inputs.newVersion }}'
