@@ -34,7 +34,8 @@ jobs:
     - name: Create release branch from development
       run: git checkout development
     - name: Uptick oldValue to newValue in pom.xml files
-      run: grep -rl --include="pom.xml" "${{ github.event.inputs.oldVersion }}-SNAPSHOT" * | xargs sed -i '' -e "s/${{ github.event.inputs.oldVersion }}-SNAPSHOT/${{ github.event.inputs.newVersion }}-SNAPSHOT/g"
+      run: |
+        grep -rl --include="pom.xml" "${{ github.event.inputs.oldVersion }}-SNAPSHOT" * | xargs sed -i '' -e "s/${{ github.event.inputs.oldVersion }}-SNAPSHOT/${{ github.event.inputs.newVersion }}-SNAPSHOT/g"
     - name: Commit changes
       run: |
         git commit -m 'Uptick repo from ${{ github.event.inputs.oldVersion }} to ${{ github.event.inputs.newVersion }}'
