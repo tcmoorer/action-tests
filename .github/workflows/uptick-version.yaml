@@ -28,27 +28,26 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Runs a single command using the runners shell
-    - name: Check out code
+    - name: 1. Check out code
       uses: actions/checkout@v2
-    - name: Create release branch from development
-      run: git checkout development
+    - name: 2. Create uptick branch from development
+      run: git checkout -b uptick-${{ github.event.inputs.versionName }} development
     #- name: Uptick oldValue to newValue in pom.xml files
     #  run: |
     #    sed -i 's/${{ github.event.inputs.oldVersion }}/${{ github.event.inputs.newVersion }}/g' pom.xml
-    - name: Find and Replace
-      uses: jacobtomlinson/gha-find-replace@master
+    - name: 3. Find and Replace oldValue with newValue in pom.xml files
+      uses: jacobtomlinson/gha-find-replace@v2
       with:
         find: ${{ github.event.inputs.oldVersion }}
         replace: ${{ github.event.inputs.newVersion }}
-        include: "**pom.xml" # Will match all pom.xml files in any nested directory
-    #- name: Commit changes
-    #  run: |
-    #    git commit -m 'Uptick repo from ${{ github.event.inputs.oldVersion }} to ${{ github.event.inputs.newVersion }}'
-    #    git push origin development
-    - name: Push changes
-      uses: ad-m/github-push-action@v0.6.0
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref }}
+        include: "**pom.xml" 
+    - name: 4. Commit and push uptick branch
+      run: |
+        git commit -m 'Uptick repo from ${{ github.event.inputs.oldVersion }} to ${{ github.event.inputs.newVersion }}'
+        git push origin uptick-${{ github.event.inputs.versionName }}
+    #- name: Push changes
+    #  uses: ad-m/github-push-action@v0.6.0
+    #  with:
+    #    github_token: ${{ secrets.GITHUB_TOKEN }}
+    #    branch: ${{ github.ref }}
 
