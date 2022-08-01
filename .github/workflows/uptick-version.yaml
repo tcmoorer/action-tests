@@ -45,6 +45,7 @@ jobs:
       run: |
         git config user.name 'Robot User'
         git config user.email 'robot@users.noreply.github.com'
+        git add --all
         git commit -m 'Uptick repo from ${{ github.event.inputs.oldVersion }} to ${{ github.event.inputs.newVersion }}'
         git push origin uptick-${{ github.event.inputs.newVersion }}
     - name: 5. Create pull request to develop
