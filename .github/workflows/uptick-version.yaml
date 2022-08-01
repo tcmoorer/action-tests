@@ -33,9 +33,14 @@ jobs:
       uses: actions/checkout@v2
     - name: Create release branch from development
       run: git checkout development
-    - name: Uptick oldValue to newValue in pom.xml files
-      run: |
-        sed -i 's/${{ github.event.inputs.oldVersion }}/${{ github.event.inputs.newVersion }}/g' pom.xml
+    #- name: Uptick oldValue to newValue in pom.xml files
+    #  run: |
+    #    sed -i 's/${{ github.event.inputs.oldVersion }}/${{ github.event.inputs.newVersion }}/g' pom.xml
+    - name: Find and Replace
+      uses: jacobtomlinson/gha-find-replace@master
+      with:
+        find: ${{ github.event.inputs.oldVersion }}
+        replace: ${{ github.event.inputs.newVersion }}
     - name: Commit changes
       run: |
         git commit -m 'Uptick repo from ${{ github.event.inputs.oldVersion }} to ${{ github.event.inputs.newVersion }}'
