@@ -7,11 +7,11 @@ name: Uptick Version Workflow
 on:
   workflow_dispatch:
     inputs:
-      pomFromVersion:
-        description: 'Current pom.xml version'
+      current:
+        description: 'Current version (pom.xml and Jenkins)'
         required: true
-      pomToVersion:
-        description: 'New pom.xml version'
+      new:
+        description: 'New version (pom.xml and Jenkins)'
         required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -26,27 +26,26 @@ jobs:
     - name: 1. Check out code
       uses: actions/checkout@v2
     - name: 2. Create uptick branch from development
-      run: git checkout -b uptick-${{ github.event.inputs.newVersion }} development
-    - name: 3. Find and Replace oldValue with newValue in pom.xml files
+      run: git checkout -b uptick-${{ github.event.inputs.new }} development
+    - name: 3. Find and Replace 'current' with 'new' in pom.xml files
       run: |
-        find . -type f -name "pom.xml" -exec sed -i 's/<version>${{ github.event.inputs.pomFromVersion }}-SNAPSHOT</version>/<version>${{ github.event.inputs.pomToVersion }}-SNAPSHOT</version>/g' {} +
+        find . -type f -name "pom.xml" -exec sed -i 's/<version>${{ github.event.inputs.current }}-SNAPSHOT</version>/<version>${{ github.event.inputs.new }}-SNAPSHOT</version>/g' {} +
     - name: 4. Commit and push uptick branch
       run: |
         git config user.name 'Robot User'
         git config user.email 'robot@users.noreply.github.com'
-        git commit -am 'Uptick repo from ${{ github.event.inputs.pomFromVersion }} to ${{ github.event.inputs.pomToVersion }}'
-        git push origin uptick-${{ github.event.inputs.pomToVersion }}
+        git commit -am 'Uptick repo from ${{ github.event.inputs.current }} to ${{ github.event.inputs.new }}'
+        git push origin uptick-${{ github.event.inputs.new }}
     - name: 5. Create pull request to develop
       uses: thomaseizinger/create-pull-request@1.0.0
       with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          head: uptick-${{ github.event.inputs.pomToVersion }}
+          head: uptick-${{ github.event.inputs.new }}
           base: development
-          title: ${{ github.event.inputs.pomToVersion }} into development
+          title: ${{ github.event.inputs.new }} into development
           reviewers: ${{ github.event.issue.user.login }}
           body: |
-              Hi!
-              This PR was created in response workflow running. 
-              pom.xml updated from ${{ github.event.inputs.pomFromVersion }} to ${{ github.event.inputs.pomToVersion }}
-              Jenkinsfile updated from x to y.
+              Hi Human!
+              This PR was created in response to a workflow running - 
+              pom.xml and Jenkinsfile updated from ${{ github.event.inputs.current }} to ${{ github.event.inputs.new }}.
 
