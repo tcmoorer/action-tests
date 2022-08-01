@@ -41,7 +41,14 @@ jobs:
       with:
         find: ${{ github.event.inputs.oldVersion }}
         replace: ${{ github.event.inputs.newVersion }}
-    - name: Commit changes
-      run: |
-        git commit -m 'Uptick repo from ${{ github.event.inputs.oldVersion }} to ${{ github.event.inputs.newVersion }}'
-        git push origin development
+        include: "**pom.xml" # Will match all pom.xml files in any nested directory
+    #- name: Commit changes
+    #  run: |
+    #    git commit -m 'Uptick repo from ${{ github.event.inputs.oldVersion }} to ${{ github.event.inputs.newVersion }}'
+    #    git push origin development
+    - name: Push changes
+      uses: ad-m/github-push-action@v0.6.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
+
