@@ -34,7 +34,7 @@ jobs:
         find . -type f -name "Jenkinsfile" -exec sed -i 's/releaseId = "${{ github.event.inputs.current }}"/releaseId = "${{ github.event.inputs.new }}"/g' {} +
     - name: 4. Commit and push uptick branch
       run: |
-        git config user.name 'Robot User'
+        git config user.name '${{ github.event.issue.user.login }}'
         git config user.email 'robot@users.noreply.github.com'
         git commit -am 'Uptick repo from ${{ github.event.inputs.current }} to ${{ github.event.inputs.new }}'
         git push origin uptick-${{ github.event.inputs.new }}
