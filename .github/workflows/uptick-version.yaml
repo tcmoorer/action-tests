@@ -30,12 +30,6 @@ jobs:
     - name: 3. Find and Replace oldValue with newValue in pom.xml files
       run: |
         find . -type f -name "pom.xml" -exec sed -i 's/${{ github.event.inputs.pomFromVersion }}/${{ github.event.inputs.pomToVersion }}/g' {} +
-    #- name: 3. Find and Replace oldValue with newValue in pom.xml files
-    #  uses: jacobtomlinson/gha-find-replace@v2
-    #  with:
-    #    find: ${{ github.event.inputs.pomFromVersion }}
-    #    replace: ${{ github.event.inputs.pomToVersion }}
-    #    include: "**pom.xml" 
     - name: 4. Commit and push uptick branch
       run: |
         git config user.name 'Robot User'
