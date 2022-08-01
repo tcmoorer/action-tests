@@ -4,9 +4,9 @@
 
 ### Repo File Organization
 
-module-a/pom.xml
-module-b/pom.xml
-Jenkinsfile
+- module-a/pom.xml
+- module-b/pom.xml
+- Jenkinsfile
 
 ### Goals: develop GitHub Actions to:
 
