@@ -6,17 +6,12 @@ name: Uptick Version Workflow
 # or API.
 on:
   workflow_dispatch:
-    # Inputs the workflow accepts.
     inputs:
-      oldVersion:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Current Release Version Id'
-        # Input has to be provided for the workflow to run
+      current:
+        description: 'Current version (pom.xml and Jenkins)'
         required: true
-      newVersion:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Next Release Version Id'
-        # Input has to be provided for the workflow to run
+      new:
+        description: 'New version (pom.xml and Jenkins)'
         required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -31,32 +26,29 @@ jobs:
     - name: 1. Check out code
       uses: actions/checkout@v2
     - name: 2. Create uptick branch from development
-      run: git checkout -b uptick-${{ github.event.inputs.newVersion }} development
-    - name: 3. Find and Replace oldValue with newValue in pom.xml files
+      run: git checkout -b uptick-${{ github.event.inputs.new }} development
+    - name: 3. Find and Replace 'current' with 'new' in pom.xml files
       run: |
-        find . -type f -name "pom.xml" -exec sed -i 's/${{ github.event.inputs.oldVersion }}/${{ github.event.inputs.newVersion }}/g' {} +
-    #- name: 3. Find and Replace oldValue with newValue in pom.xml files
-    #  uses: jacobtomlinson/gha-find-replace@v2
-    #  with:
-    #    find: ${{ github.event.inputs.oldVersion }}
-    #    replace: ${{ github.event.inputs.newVersion }}
-    #    include: "**pom.xml" 
-    - name: 4. Commit and push uptick branch
+        find . -type f -name "pom.xml" -exec sed -i 's/<version>${{ github.event.inputs.current }}-SNAPSHOT</version>/<version>${{ github.event.inputs.new }}-SNAPSHOT</version>/g' {} +
+    - name: 4. Find and Replace 'current' with 'new' in Jenkinsfile
+      run: |
+        sed -i -- 's/releaseId = "{{ github.event.inputs.current }}"/releaseId = "${{ github.event.inputs.new }}"/g' Jenkinsfile
+    - name: 5. Commit and push uptick branch
       run: |
         git config user.name 'Robot User'
         git config user.email 'robot@users.noreply.github.com'
-        git commit -am 'Uptick repo from ${{ github.event.inputs.oldVersion }} to ${{ github.event.inputs.newVersion }}'
-        git push origin uptick-${{ github.event.inputs.newVersion }}
-    - name: 5. Create pull request to develop
+        git commit -am 'Uptick repo from ${{ github.event.inputs.current }} to ${{ github.event.inputs.new }}'
+        git push origin uptick-${{ github.event.inputs.new }}
+    - name: 6. Create pull request to develop
       uses: thomaseizinger/create-pull-request@1.0.0
       with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          head: uptick-${{ github.event.inputs.newVersion }}
+          head: uptick-${{ github.event.inputs.new }}
           base: development
-          title: ${{ github.event.inputs.newVersion }} into development
+          title: ${{ github.event.inputs.new }} into development
           reviewers: ${{ github.event.issue.user.login }}
           body: |
-              Hi!
-              This PR was created in response workflow running.
-              I've updated the version name and code commit: ${{ steps.make-commit.outputs.commit }}.
+              Hi Human!
+              This PR was created in response to a workflow running - 
+              pom.xml and Jenkinsfile updated from ${{ github.event.inputs.current }} to ${{ github.event.inputs.new }}.
 
