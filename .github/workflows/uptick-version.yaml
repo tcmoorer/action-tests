@@ -34,7 +34,7 @@ jobs:
       run: git checkout -b uptick-${{ github.event.inputs.versionName }} development
     - name: 3. Find and Replace oldValue with newValue in pom.xml files
       run: |
-        sed -i 's/${{ github.event.inputs.oldVersion }}/${{ github.event.inputs.newVersion }}/g' pom.xml
+        find . -type f -name "pom.xml" -exec sed -i 's/${{ github.event.inputs.oldVersion }}/${{ github.event.inputs.newVersion }}/g' {} +
     #- name: 3. Find and Replace oldValue with newValue in pom.xml files
     #  uses: jacobtomlinson/gha-find-replace@v2
     #  with:
