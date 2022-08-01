@@ -32,7 +32,7 @@ jobs:
         find . -type f -name "pom.xml" -exec sed -i 's/<version>${{ github.event.inputs.current }}-SNAPSHOT<\/version>/<version>${{ github.event.inputs.new }}-SNAPSHOT<\/version>/g' {} +
     - name: 4. Find and Replace 'current' with 'new' in Jenkinsfile
       run: |
-        sed -i 's/releaseId = "{{ github.event.inputs.current }}"/releaseId = "${{ github.event.inputs.new }}"/g' Jenkinsfile
+        find . -type f -name "Jenkinsfile" -exec sed -i 's/releaseId = "{{ github.event.inputs.current }}"/releaseId = "${{ github.event.inputs.new }}"/g' {} +
     - name: 5. Commit and push uptick branch
       run: |
         git config user.name 'Robot User'
