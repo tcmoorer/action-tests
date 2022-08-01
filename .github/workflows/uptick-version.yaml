@@ -30,13 +30,16 @@ jobs:
     - name: 3. Find and Replace 'current' with 'new' in pom.xml files
       run: |
         find . -type f -name "pom.xml" -exec sed -i 's/<version>${{ github.event.inputs.current }}-SNAPSHOT</version>/<version>${{ github.event.inputs.new }}-SNAPSHOT</version>/g' {} +
-    - name: 4. Commit and push uptick branch
+    - name: 4. Find and Replace 'current' with 'new' in Jenkinsfile
+      run: |
+        sed -i -- 's/releaseId = "{{ github.event.inputs.current }}"/releaseId = "${{ github.event.inputs.new }}"/g' Jenkinsfile
+    - name: 5. Commit and push uptick branch
       run: |
         git config user.name 'Robot User'
         git config user.email 'robot@users.noreply.github.com'
         git commit -am 'Uptick repo from ${{ github.event.inputs.current }} to ${{ github.event.inputs.new }}'
         git push origin uptick-${{ github.event.inputs.new }}
-    - name: 5. Create pull request to develop
+    - name: 6. Create pull request to develop
       uses: thomaseizinger/create-pull-request@1.0.0
       with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
