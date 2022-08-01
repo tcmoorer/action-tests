@@ -31,7 +31,7 @@ jobs:
     - name: 1. Check out code
       uses: actions/checkout@v2
     - name: 2. Create uptick branch from development
-      run: git checkout -b uptick-${{ github.event.inputs.versionName }} development
+      run: git checkout -b uptick-${{ github.event.inputs.newVersion }} development
     - name: 3. Find and Replace oldValue with newValue in pom.xml files
       run: |
         find . -type f -name "pom.xml" -exec sed -i 's/${{ github.event.inputs.oldVersion }}/${{ github.event.inputs.newVersion }}/g' {} +
