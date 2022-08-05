@@ -28,10 +28,10 @@ jobs:
       run: git checkout -b uptick-${{ github.event.inputs.new }} development
     - name: 3a. Find and Replace 'current' with 'new' in pom.xml files
       run: |
-        find . -type f -name "pom.xml" -exec sed -i 's/<version>${{ github.event.inputs.current }}-SNAPSHOT<\/version>/<version>${{ github.event.inputs.new }}-SNAPSHOT<\/version>/g' {} +
+        find . -type f -name 'pom.xml' -exec sed -i 's/${{ github.event.inputs.current }}-SNAPSHOT/${{ github.event.inputs.new }}-SNAPSHOT/g' {} +
     - name: 3b. Find and Replace 'current' with 'new' in Jenkinsfile
       run: |
-        find . -type f -name "Jenkinsfile" -exec sed -i 's/releaseId = "${{ github.event.inputs.current }}"/releaseId = "${{ github.event.inputs.new }}"/g' {} +
+        find . -type f -name 'Jenkinsfile' -exec sed -i 's/releaseId = "${{ github.event.inputs.current }}"/releaseId = "${{ github.event.inputs.new }}"/g' {} +
     - name: 4. Commit and push uptick branch
       run: |
         git config user.name '${{ github.event.issue.user.login }}'
