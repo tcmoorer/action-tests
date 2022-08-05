@@ -34,8 +34,8 @@ jobs:
         find . -type f -name 'Jenkinsfile' -exec sed -i 's/releaseId = "${{ github.event.inputs.current }}"/releaseId = "${{ github.event.inputs.new }}"/g' {} +
     - name: 4. Commit and push uptick branch
       run: |
-        git config user.name '${{ github.event.issue.user.login }}'
-        git config user.email 'robot@users.noreply.github.com'
+        git config user.name '${GITHUB_ACTOR}'
+        git config user.email '${GITHUB_ACTOR}@users.noreply.github.com'
         git commit -am 'Uptick repo from ${{ github.event.inputs.current }} to ${{ github.event.inputs.new }}'
         git push origin uptick-${{ github.event.inputs.new }}
     - name: 5. Create pull request to develop
@@ -45,7 +45,7 @@ jobs:
           head: uptick-${{ github.event.inputs.new }}
           base: development
           title: ${{ github.event.inputs.new }} into development
-          reviewers: ${{ github.event.issue.user.login }}
+          reviewers: ${GITHUB_ACTOR}
           body: |
               Hi Human!
               This PR was created in response to a workflow running - 
